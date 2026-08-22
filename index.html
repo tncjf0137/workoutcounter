@@ -194,18 +194,54 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
     <div id="today-start"></div>
   </div>
 
-  <!-- TIMERS -->
-  <div id="timers-row">
-    <div class="timer-box" id="stopwatch-box">
-      <div class="timer-label">⏱ 운동 총 시간</div>
-      <div class="timer-val" id="stopwatch-val">0:00</div>
-    </div>
-    <div class="timer-box" id="rest-timer-box">
-      <div class="timer-label">😮‍💨 쉬는 시간</div>
-      <div class="timer-val" id="rest-elapsed-val">—</div>
-    </div>
+<!-- 타이머 영역 (timers-row) 내부를 이걸로 교체 -->
+<div id="timers-row">
+  <div class="timer-box" id="rest-timer-box">
+    <div class="timer-label">⏱ 현재 휴식 시간</div>
+    <div class="timer-val" id="rest-timer-val">0:00</div>
   </div>
+</div>
 
+  function checkTodayStart() {
+  const todayKey = new Date().toLocaleDateString();
+  const savedDate = localStorage.getItem('wc_today_date');
+  
+  // 날짜가 바뀌었거나 기록이 없으면 현재 시간 새로 저장
+  if (savedDate !== todayKey) {
+    const now = new Date();
+    localStorage.setItem('wc_today_date', todayKey);
+    localStorage.setItem('wc_start_time', now.getTime());
+    todayStartEl.textContent = '오늘 시작 ' + now.getHours() + ':' + String(now.getMinutes()).padStart(2, '0');
+  } else {
+    // 같은 날이면 기존 저장된 시간 표시
+    const savedTime = new Date(parseInt(localStorage.getItem('wc_start_time')));
+    todayStartEl.textContent = '오늘 시작 ' + savedTime.getHours() + ':' + String(savedTime.getMinutes()).padStart(2, '0');
+  }
+}
+  let restTimer = null;
+let restSec = 0;
+
+// 휴식 시작 (타이머 작동)
+function startRestTimer() {
+  if (restTimer) return;
+  restSec = 0; // 새 휴식 진입 시 0초부터 시작
+  document.getElementById('rest-timer-box').classList.add('active-timer');
+  restTimer = setInterval(() => {
+    restSec++;
+    const m = Math.floor(restSec / 60), s = restSec % 60;
+    document.getElementById('rest-timer-val').textContent = m + ':' + String(s).padStart(2, '0');
+  }, 1000);
+}
+
+// 운동 시작/재개 (타이머 정지)
+function stopRestTimer() {
+  if (restTimer) {
+    clearInterval(restTimer);
+    restTimer = null;
+  }
+  document.getElementById('rest-timer-box').classList.remove('active-timer');
+}
+  
   <div id="goal-row">
     <div class="goal-section">
       <span class="goal-label">목표</span>
@@ -624,12 +660,13 @@ function increment(){
   if(count === sessionGoal && !goalReachedPlayed){ goalReachedPlayed = true; playGoal(); vib([50,30,80]); showToast('🎯 목표 달성!', true); }
   startCooldown();
 
+// 3. 쿨다운(또는 운동 종료) 후 휴식이 시작될 때 타이머 다시 켬
   const cd = cfg.cooldownOn ? cfg.cooldown * 1000 : 300;
   setTimeout(() => {
-    pauseStopwatch();
-    startRestElapsed();
+    startRestTimer(); // 휴식 시작! -> 타이머 재개
   }, cd + 50);
 }
+
 
 function undo(){
   if(!countHistory.length) return;
