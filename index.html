@@ -437,6 +437,7 @@ function renderExChips(){
 
 // STATE
 let count = 0, countHistory = [], curSet = 1;
+  let isResting = true;
 let currentEx = getExercises()[0] || '운동';
 let goalReachedPlayed = false, sessionGoal = cfg.baseGoal;
 
@@ -565,24 +566,36 @@ function updateProgress(){
 }
 
 // MAIN ACTIONS
-function increment(){
-  if(cooldownActive){ vib(10); return; }
-  
-  checkTodayStart();
-  stopRestTimer();
+function increment(){if (cooldownActive) { vib(10); return; }
 
-  countHistory.push(count); if(countHistory.length > 100) countHistory.shift();
-  count++; display.textContent = count;
-  display.classList.remove('pop'); void display.offsetWidth; display.classList.add('pop');
-  setTimeout(() => display.classList.remove('pop'), 120);
-  vib(25); playClick(); updateProgress();
-  if(count === sessionGoal && !goalReachedPlayed){ goalReachedPlayed = true; playGoal(); vib([50,30,80]); showToast('🎯 목표 달성!', true); }
+  if (isResting) {
+    // [상태 1: 휴식 중일 때 누름 -> 운동 시작!]
+    checkTodayStart();
+    stopRestTimer(); // 타이머 정지
+    
+    countHistory.push(count); 
+    if (countHistory.length > 100) countHistory.shift();
+    count++; 
+    display.textContent = count;
+
+    display.classList.remove('pop'); void display.offsetWidth; display.classList.add('pop');
+    setTimeout(() => display.classList.remove('pop'), 120);
+    vib(25); playClick(); updateProgress();
+    
+    if (count === sessionGoal && !goalReachedPlayed) { 
+      goalReachedPlayed = true; playGoal(); vib([50,30,80]); showToast('🎯 목표 달성!', true); 
+    }
+
+    isResting = false; // 상태 변경 -> 운동 중
+  } else {
+    // [상태 2: 운동 중일 때 누름 -> 운동 끝, 휴식 시작!]
+    startRestTimer(); // 타이머 재개
+    
+    isResting = true; // 상태 변경 -> 휴식 중
+  }
+
   startCooldown();
-
-  const cd = cfg.cooldownOn ? cfg.cooldown * 1000 : 300;
-  setTimeout(() => {
-    startRestTimer();
-  }, cd + 50);
+                     
 }
 
 function undo(){
