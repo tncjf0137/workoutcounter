@@ -19,7 +19,7 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 .page{display:none;width:100%;flex-direction:column;align-items:center}
 .page.active{display:flex}
 
-/* ===== WEEKLY STRIP ===== */
+/* WEEKLY STRIP */
 #weekly-strip{width:100%;padding:14px 16px 10px;background:var(--bg)}
 #weekly-label{font-size:11px;color:var(--text4);letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px}
 #weekly-days{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
@@ -54,7 +54,6 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 @keyframes pulse-bar{from{opacity:.4}to{opacity:1}}
 .timer-label{font-size:10px;color:var(--text4);letter-spacing:.08em;text-transform:uppercase}
 .timer-val{font-size:22px;font-weight:300;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
-#stopwatch-val{color:var(--text2)}
 #rest-timer-box .timer-val{color:var(--orange)}
 
 /* GOAL ROW */
@@ -194,56 +193,14 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
     <div id="today-start"></div>
   </div>
 
-<!-- 타이머 영역 (timers-row) 내부를 이걸로 교체 -->
-<div id="timers-row">
-  <div class="timer-box" id="rest-timer-box">
-    <div class="timer-label">⏱ 현재 휴식 시간</div>
-    <div class="timer-val" id="rest-timer-val">0:00</div>
+  <!-- SINGLE REST TIMER ROW -->
+  <div id="timers-row">
+    <div class="timer-box" id="rest-timer-box">
+      <div class="timer-label">⏱ 현재 휴식 시간</div>
+      <div class="timer-val" id="rest-timer-val">0:00</div>
+    </div>
   </div>
-</div>
-<script>
-  function checkTodayStart() {
-  const todayKey = new Date().toLocaleDateString();
-  const savedDate = localStorage.getItem('wc_today_date');
-  
-  // 날짜가 바뀌었거나 기록이 없으면 현재 시간 새로 저장
-  if (savedDate !== todayKey) {
-    const now = new Date();
-    localStorage.setItem('wc_today_date', todayKey);
-    localStorage.setItem('wc_start_time', now.getTime());
-    todayStartEl.textContent = '오늘 시작 ' + now.getHours() + ':' + String(now.getMinutes()).padStart(2, '0');
-  } else {
-    // 같은 날이면 기존 저장된 시간 표시
-    const savedTime = new Date(parseInt(localStorage.getItem('wc_start_time')));
-    todayStartEl.textContent = '오늘 시작 ' + savedTime.getHours() + ':' + String(savedTime.getMinutes()).padStart(2, '0');
-  }
-}
 
-</script>
-  let restTimer = null;
-let restSec = 0;
-
-// 휴식 시작 (타이머 작동)
-function startRestTimer() {
-  if (restTimer) return;
-  restSec = 0; // 새 휴식 진입 시 0초부터 시작
-  document.getElementById('rest-timer-box').classList.add('active-timer');
-  restTimer = setInterval(() => {
-    restSec++;
-    const m = Math.floor(restSec / 60), s = restSec % 60;
-    document.getElementById('rest-timer-val').textContent = m + ':' + String(s).padStart(2, '0');
-  }, 1000);
-}
-
-// 운동 시작/재개 (타이머 정지)
-function stopRestTimer() {
-  if (restTimer) {
-    clearInterval(restTimer);
-    restTimer = null;
-  }
-  document.getElementById('rest-timer-box').classList.remove('active-timer');
-}
-  
   <div id="goal-row">
     <div class="goal-section">
       <span class="goal-label">목표</span>
@@ -413,7 +370,7 @@ function stopRestTimer() {
 <div id="toast"></div>
 
 <script>
-// ===== CONFIG =====
+// CONFIG
 const DEFAULT_CFG = {
   baseGoal: 30, goalDecay: 3, goalDecayOn: true,
   minGoal: 5, cooldown: 0.8, cooldownOn: true,
@@ -466,7 +423,7 @@ function renderExChips(){
       currentEx = name;
       document.getElementById('ex-label').textContent = name;
       resetCount(); curSet = 1; document.getElementById('cur-set-num').textContent = '1';
-      updateGoalDisplay(); stopSetRest(); endCooldown();
+      updateGoalDisplay(); stopSetRest(); stopRestTimer(); endCooldown();
     });
     row.insertBefore(btn, editBtn);
   });
@@ -478,20 +435,18 @@ function renderExChips(){
   }
 }
 
-// ===== STATE =====
+// STATE
 let count = 0, countHistory = [], curSet = 1;
 let currentEx = getExercises()[0] || '운동';
 let goalReachedPlayed = false, sessionGoal = cfg.baseGoal;
-let todayStart = null;
 
 // TIMERS
-let stopwatchInterval = null, stopwatchStart = null, stopwatchElapsed = 0;
-let restElapsedInterval = null, restElapsedStart = null;
 let restPauseTimer = null, restPauseRemaining = 0;
+let restTimer = null, restSec = 0;
 let cooldownActive = false, cooldownAnimFrame = null;
 const CIRCUMFERENCE = 2 * Math.PI * 100;
 
-// ===== ELEMENTS =====
+// ELEMENTS
 const display = document.getElementById('count-display');
 const goalNumEl = document.getElementById('goal-num');
 const decayLabel = document.getElementById('decay-label');
@@ -502,50 +457,31 @@ const cooldownArc = document.getElementById('cooldown-arc');
 const restBanner = document.getElementById('rest-banner');
 const restCountdown = document.getElementById('rest-countdown');
 const todayStartEl = document.getElementById('today-start');
-const stopwatchEl = document.getElementById('stopwatch-val');
-const restElapsedEl = document.getElementById('rest-elapsed-val');
 
-// ===== STOPWATCH =====
-function startStopwatch(){
-  if(stopwatchInterval) return;
-  stopwatchStart = Date.now();
-  stopwatchInterval = setInterval(() => {
-    const total = stopwatchElapsed + Math.floor((Date.now() - stopwatchStart) / 1000);
-    const m = Math.floor(total / 60), s = total % 60;
-    stopwatchEl.textContent = m + ':' + String(s).padStart(2, '0');
-  }, 500);
-  document.getElementById('stopwatch-box').classList.add('active-timer');
-}
-
-function pauseStopwatch(){
-  if(!stopwatchInterval) return;
-  stopwatchElapsed += Math.floor((Date.now() - stopwatchStart) / 1000);
-  clearInterval(stopwatchInterval);
-  stopwatchInterval = null;
-  stopwatchStart = null;
-  document.getElementById('stopwatch-box').classList.remove('active-timer');
-}
-
-// ===== REST ELAPSED =====
-function startRestElapsed(){
-  stopRestElapsed();
-  restElapsedStart = Date.now();
-  restElapsedEl.textContent = '0초';
-  document.getElementById('rest-timer-box').classList.add('active-timer');
-  restElapsedInterval = setInterval(() => {
-    const sec = Math.floor((Date.now() - restElapsedStart) / 1000);
-    const m = Math.floor(sec / 60), s = sec % 60;
-    restElapsedEl.textContent = m > 0 ? m + '분 ' + s + '초' : sec + '초';
+// REST TIMER (휴식 시 작동 / 운동 시 정지)
+function startRestTimer() {
+  if (restTimer) return;
+  restSec = 0;
+  const box = document.getElementById('rest-timer-box');
+  if (box) box.classList.add('active-timer');
+  restTimer = setInterval(() => {
+    restSec++;
+    const m = Math.floor(restSec / 60), s = restSec % 60;
+    const valEl = document.getElementById('rest-timer-val');
+    if (valEl) valEl.textContent = m + ':' + String(s).padStart(2, '0');
   }, 1000);
 }
 
-function stopRestElapsed(){
-  clearInterval(restElapsedInterval); restElapsedInterval = null; restElapsedStart = null;
-  restElapsedEl.textContent = '—';
-  document.getElementById('rest-timer-box').classList.remove('active-timer');
+function stopRestTimer() {
+  if (restTimer) {
+    clearInterval(restTimer);
+    restTimer = null;
+  }
+  const box = document.getElementById('rest-timer-box');
+  if (box) box.classList.remove('active-timer');
 }
 
-// ===== SET REST BANNER =====
+// SET REST BANNER
 function startSetRest(){
   if(!cfg.restTimeOn || cfg.restTime <= 0) return;
   restPauseRemaining = cfg.restTime;
@@ -563,7 +499,7 @@ function updateSetRestDisplay(){
   restCountdown.textContent = m + ':' + String(s).padStart(2, '0');
 }
 
-// ===== COOLDOWN =====
+// COOLDOWN
 function startCooldown(){
   if(!cfg.cooldownOn || cfg.cooldown <= 0) return;
   cooldownActive = true; bigBtn.classList.add('locked');
@@ -583,43 +519,24 @@ function endCooldown(){
   cancelAnimationFrame(cooldownAnimFrame);
 }
 
-// ===== DATE / TODAY START =====
+// TODAY START
+function checkTodayStart() {
+  const todayKey = new Date().toLocaleDateString();
+  const savedDate = localStorage.getItem('wc_today_date');
+  if (savedDate !== todayKey) {
+    const now = new Date();
+    localStorage.setItem('wc_today_date', todayKey);
+    localStorage.setItem('wc_start_time', now.getTime());
+    todayStartEl.textContent = '오늘 시작 ' + now.getHours() + ':' + String(now.getMinutes()).padStart(2, '0');
+  } else {
+    const savedTime = new Date(parseInt(localStorage.getItem('wc_start_time')));
+    todayStartEl.textContent = '오늘 시작 ' + savedTime.getHours() + ':' + String(savedTime.getMinutes()).padStart(2, '0');
+  }
+}
+
 function dateKey(d){ return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
 
-function refreshTodayStart(){
-  const today = dateKey(new Date());
-  const days = JSON.parse(localStorage.getItem('wc_days') || '{}');
-  if(!days[today]){
-    const now = new Date();
-    days[today] = {start: now.toISOString(), sets: []};
-    localStorage.setItem('wc_days', JSON.stringify(days));
-    todayStart = now;
-    updateStartDisplay();
-    renderWeeklyStrip();
-  }
-}
-
-function markTodayStart(){
-  const today = dateKey(new Date());
-  const days = JSON.parse(localStorage.getItem('wc_days') || '{}');
-  const now = new Date();
-  if(!days[today]){
-    days[today] = {start: now.toISOString(), sets: []};
-    localStorage.setItem('wc_days', JSON.stringify(days));
-    todayStart = now;
-  } else {
-    todayStart = new Date(days[today].start);
-  }
-  updateStartDisplay();
-}
-
-function updateStartDisplay(){
-  if(!todayStart) return;
-  const h = todayStart.getHours(), m = String(todayStart.getMinutes()).padStart(2, '0');
-  todayStartEl.textContent = '오늘 시작 ' + h + ':' + m;
-}
-
-// ===== RECORDS =====
+// RECORDS
 function saveRecord(exName, setNum, cnt){
   const records = JSON.parse(localStorage.getItem('wc_records') || '[]');
   const now = new Date();
@@ -633,7 +550,7 @@ function saveRecord(exName, setNum, cnt){
   localStorage.setItem('wc_days', JSON.stringify(days));
 }
 
-// ===== GOAL =====
+// GOAL
 function computeGoal(setNum){ if(!cfg.goalDecayOn) return cfg.baseGoal; return Math.max(cfg.minGoal, cfg.baseGoal - cfg.goalDecay * (setNum - 1)); }
 function updateGoalDisplay(){
   sessionGoal = computeGoal(curSet);
@@ -647,12 +564,12 @@ function updateProgress(){
   count >= sessionGoal ? display.classList.add('goal-reached') : display.classList.remove('goal-reached');
 }
 
-// ===== MAIN ACTIONS =====
+// MAIN ACTIONS
 function increment(){
   if(cooldownActive){ vib(10); return; }
-  refreshTodayStart();
-  startStopwatch();
-  stopRestElapsed();
+  
+  checkTodayStart();
+  stopRestTimer();
 
   countHistory.push(count); if(countHistory.length > 100) countHistory.shift();
   count++; display.textContent = count;
@@ -662,13 +579,11 @@ function increment(){
   if(count === sessionGoal && !goalReachedPlayed){ goalReachedPlayed = true; playGoal(); vib([50,30,80]); showToast('🎯 목표 달성!', true); }
   startCooldown();
 
-// 3. 쿨다운(또는 운동 종료) 후 휴식이 시작될 때 타이머 다시 켬
   const cd = cfg.cooldownOn ? cfg.cooldown * 1000 : 300;
   setTimeout(() => {
-    startRestTimer(); // 휴식 시작! -> 타이머 재개
+    startRestTimer();
   }, cd + 50);
 }
-
 
 function undo(){
   if(!countHistory.length) return;
@@ -681,8 +596,7 @@ function resetCount(){
   countHistory = []; count = 0; goalReachedPlayed = false;
   display.textContent = '0'; display.classList.remove('goal-reached');
   display.classList.add('flash'); setTimeout(() => display.classList.remove('flash'), 180);
-  updateProgress(); endCooldown();
-  pauseStopwatch(); stopRestElapsed();
+  updateProgress(); endCooldown(); stopRestTimer();
 }
 
 function completeSet(){
@@ -695,7 +609,7 @@ function completeSet(){
   renderWeeklyStrip();
 }
 
-// ===== TOAST =====
+// TOAST
 let toastTmr = null;
 function showToast(msg){
   const t = document.getElementById('toast');
@@ -703,7 +617,7 @@ function showToast(msg){
   clearTimeout(toastTmr); toastTmr = setTimeout(() => t.className = '', 2200);
 }
 
-// ===== WEEKLY STRIP =====
+// WEEKLY STRIP
 function renderWeeklyStrip(){
   const days = JSON.parse(localStorage.getItem('wc_days') || '{}');
   const now = new Date();
@@ -736,7 +650,7 @@ function renderWeeklyStrip(){
   document.getElementById('mini-total').textContent = keys.length;
 }
 
-// ===== CALENDAR =====
+// CALENDAR
 let calYear = new Date().getFullYear(), calMonth = new Date().getMonth();
 function renderCalendar(){
   document.getElementById('cal-title').textContent = calYear + '년 ' + (calMonth + 1) + '월';
@@ -776,7 +690,7 @@ function renderCalendar(){
 document.getElementById('cal-prev').addEventListener('pointerdown', e => { e.preventDefault(); calMonth--; if(calMonth < 0){ calMonth = 11; calYear--; } renderCalendar(); });
 document.getElementById('cal-next').addEventListener('pointerdown', e => { e.preventDefault(); calMonth++; if(calMonth > 11){ calMonth = 0; calYear++; } renderCalendar(); });
 
-// ===== HISTORY PAGE =====
+// HISTORY PAGE
 function renderHistory(){
   const records = JSON.parse(localStorage.getItem('wc_records') || '[]');
   const list = document.getElementById('history-list');
@@ -810,7 +724,7 @@ document.getElementById('clear-history-btn').addEventListener('pointerdown', e =
   }
 });
 
-// ===== SETTINGS UI =====
+// SETTINGS UI
 function syncSettingsUI(){
   document.getElementById('s-baseGoal').textContent = cfg.baseGoal;
   document.getElementById('s-cooldown').textContent = cfg.cooldown.toFixed(1) + 's';
@@ -844,7 +758,7 @@ document.querySelectorAll('.toggle').forEach(t => {
   });
 });
 
-// ===== EXERCISE EDITOR =====
+// EXERCISE EDITOR
 document.getElementById('edit-ex-btn').addEventListener('pointerdown', e => { e.preventDefault(); openExModal(); });
 document.getElementById('close-ex-modal').addEventListener('pointerdown', e => { e.preventDefault(); closeExModal(); });
 document.getElementById('ex-modal').addEventListener('pointerdown', e => { if(e.target === document.getElementById('ex-modal')) closeExModal(); });
@@ -862,7 +776,7 @@ document.getElementById('add-ex-btn').addEventListener('pointerdown', e => {
   const el = getExercises(); el.push(name); saveExercises(el); inp.value = ''; renderExEditList();
 });
 
-// ===== TABS =====
+// TABS
 document.querySelectorAll('.tab').forEach(tab => {
   tab.addEventListener('pointerdown', e => {
     e.preventDefault();
@@ -876,7 +790,7 @@ document.querySelectorAll('.tab').forEach(tab => {
   });
 });
 
-// ===== CONTROLS =====
+// CONTROLS
 document.getElementById('big-btn').addEventListener('pointerdown', e => { e.preventDefault(); increment(); });
 document.getElementById('undo-btn').addEventListener('pointerdown', e => { e.preventDefault(); undo(); });
 document.getElementById('reset-btn').addEventListener('pointerdown', e => { e.preventDefault(); resetCount(); });
@@ -892,13 +806,12 @@ document.addEventListener('keydown', e => {
   increment();
 });
 
-// ===== INIT =====
+// INIT
 cooldownArc.style.strokeDasharray = CIRCUMFERENCE;
 cooldownArc.style.strokeDashoffset = CIRCUMFERENCE;
 renderExChips();
 updateGoalDisplay();
 syncSettingsUI();
-markTodayStart();
 renderWeeklyStrip();
 </script>
 </body>
