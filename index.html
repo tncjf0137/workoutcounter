@@ -201,7 +201,7 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
     <div class="timer-val" id="rest-timer-val">0:00</div>
   </div>
 </div>
-
+<script>
   function checkTodayStart() {
   const todayKey = new Date().toLocaleDateString();
   const savedDate = localStorage.getItem('wc_today_date');
@@ -218,6 +218,8 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
     todayStartEl.textContent = '오늘 시작 ' + savedTime.getHours() + ':' + String(savedTime.getMinutes()).padStart(2, '0');
   }
 }
+
+</script>
   let restTimer = null;
 let restSec = 0;
 
