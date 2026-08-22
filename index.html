@@ -15,60 +15,31 @@
   --bg:#0f0f0f;--bg2:#1a1a1a;--bg3:#242424;
   --border:#2a2a2a;--border2:#333;
   --text:#fff;--text2:#aaa;--text3:#666;--text4:#444;
-  --green:#34c759;--red:#ff453a;--radius:16px;--radius-sm:10px;
+  --green:#34c759;--red:#ff453a;--blue:#0a84ff;
+  --radius:16px;--radius-sm:10px;
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Segoe UI',sans-serif;min-height:100dvh;display:flex;flex-direction:column;align-items:center;user-select:none;-webkit-user-select:none;overflow-x:hidden}
 
-/* TABS */
 #tab-bar{width:100%;display:flex;background:var(--bg);border-bottom:1px solid var(--border);padding:0 16px;position:sticky;top:0;z-index:50}
 .tab{flex:1;padding:14px 8px;text-align:center;font-size:13px;color:var(--text3);cursor:pointer;border-bottom:2px solid transparent;transition:color .15s,border-color .15s;touch-action:manipulation}
 .tab.active{color:var(--orange);border-bottom-color:var(--orange)}
 
-/* PAGES */
 .page{display:none;width:100%;flex-direction:column;align-items:center}
 .page.active{display:flex}
 
-/* ===== WEEKLY STRIP ===== */
-#weekly-strip{
-  width:100%;padding:14px 16px 10px;
-  background:var(--bg);
-}
+/* WEEKLY STRIP */
+#weekly-strip{width:100%;padding:14px 16px 10px;background:var(--bg)}
 #weekly-label{font-size:11px;color:var(--text4);letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px}
 #weekly-days{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
-.wday{
-  display:flex;flex-direction:column;align-items:center;gap:5px;
-}
+.wday{display:flex;flex-direction:column;align-items:center;gap:5px}
 .wday-name{font-size:11px;color:var(--text4)}
-.wday-circle{
-  width:36px;height:36px;border-radius:50%;
-  display:flex;align-items:center;justify-content:center;
-  font-size:13px;font-weight:500;
-  background:var(--bg2);color:var(--text3);
-  position:relative;transition:all .2s;
-}
-.wday-circle.today{
-  border:2px solid var(--orange);color:var(--text);background:var(--bg2);
-}
-.wday-circle.did{
-  background:var(--green);color:#fff;
-}
-.wday-circle.missed{
-  background:var(--bg2);color:var(--red);
-}
-.wday-circle.future{
-  background:var(--bg2);color:var(--text4);
-}
-.wday-streak{
-  width:6px;height:6px;border-radius:50%;
-  background:var(--orange);opacity:0;transition:opacity .2s;
-}
-.wday-streak.show{opacity:1}
-#streak-line{
-  width:calc(100% - 32px);display:flex;align-items:center;
-  justify-content:space-between;margin:6px 0 2px;
-  font-size:12px;color:var(--text3);
-}
+.wday-circle{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500;background:var(--bg2);color:var(--text3);transition:all .2s}
+.wday-circle.today{border:2px solid var(--orange);color:var(--text)}
+.wday-circle.did{background:var(--green);color:#fff}
+.wday-circle.missed{background:var(--bg2);color:var(--red)}
+.wday-circle.future{background:var(--bg2);color:var(--text4)}
+#streak-line{width:calc(100% - 32px);display:flex;justify-content:space-between;margin:8px 0 2px;font-size:12px;color:var(--text3)}
 #streak-line b{color:var(--orange)}
 
 /* EXERCISE ROW */
@@ -79,31 +50,38 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 #edit-ex-btn{flex-shrink:0;width:32px;height:32px;border-radius:50%;border:1px solid var(--border2);background:transparent;color:var(--text3);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;touch-action:manipulation}
 #edit-ex-btn:active{background:var(--bg2)}
 
-/* STATUS BAR */
-#status-bar{width:100%;display:flex;align-items:center;justify-content:space-between;padding:4px 20px 4px}
+/* STATUS */
+#status-bar{width:100%;display:flex;align-items:center;justify-content:space-between;padding:4px 20px}
 #set-info{font-size:14px;color:var(--text3)}
 #set-info b{color:var(--orange)}
 #today-start{font-size:12px;color:var(--text4)}
 
-/* TIMERS ROW */
-#timers-row{width:100%;display:flex;gap:8px;padding:4px 16px 6px}
-.timer-box{
-  flex:1;background:var(--bg2);border-radius:var(--radius-sm);
-  padding:10px 14px;display:flex;flex-direction:column;gap:3px;
-  position:relative;overflow:hidden;
-}
-.timer-box.active-timer::after{
-  content:'';position:absolute;bottom:0;left:0;right:0;height:2px;
-  background:var(--orange);animation:pulse-bar 1s ease-in-out infinite alternate;
-}
+/* TIMERS */
+#timers-row{width:100%;display:flex;gap:8px;padding:6px 16px}
+.timer-box{flex:1;background:var(--bg2);border-radius:var(--radius-sm);padding:10px 14px;display:flex;flex-direction:column;gap:3px;position:relative;overflow:hidden;transition:background .3s}
+.timer-box.active-timer{background:var(--bg3)}
+.timer-box.active-timer::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:var(--orange);animation:pulse-bar 1s ease-in-out infinite alternate}
 @keyframes pulse-bar{from{opacity:.4}to{opacity:1}}
 .timer-label{font-size:10px;color:var(--text4);letter-spacing:.08em;text-transform:uppercase}
-.timer-val{font-size:22px;font-weight:300;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.timer-val{font-size:22px;font-weight:300;font-variant-numeric:tabular-nums;letter-spacing:-.02em;color:var(--text2)}
+#workout-timer-box .timer-val{color:var(--text)}
 #rest-timer-box .timer-val{color:var(--orange)}
-#stopwatch-val{color:var(--text2)}
+
+/* STATE TOGGLE BTN */
+#state-btn-wrap{width:100%;padding:4px 16px 2px;display:flex;gap:8px}
+#workout-state-btn{
+  flex:1;padding:12px;border-radius:var(--radius);border:none;
+  font-size:15px;font-weight:500;cursor:pointer;font-family:inherit;
+  touch-action:manipulation;transition:all .2s;
+}
+#workout-state-btn.exercising{background:var(--bg2);color:var(--text3);border:1px solid var(--border2)}
+#workout-state-btn.exercising::before{content:'💤 '}
+#workout-state-btn.resting{background:var(--orange);color:#fff;border:1px solid transparent}
+#workout-state-btn.resting::before{content:'💪 '}
+#workout-state-btn:active{transform:scale(.97);opacity:.85}
 
 /* GOAL ROW */
-#goal-row{width:100%;display:flex;align-items:center;justify-content:space-between;padding:0 20px 6px;gap:12px}
+#goal-row{width:100%;display:flex;align-items:center;justify-content:space-between;padding:4px 20px 6px;gap:12px}
 .goal-section{display:flex;align-items:center;gap:8px}
 .goal-label{font-size:12px;color:var(--text3)}
 .goal-val-btn{background:var(--bg2);border:1px solid var(--border2);color:var(--text);font-size:13px;width:40px;text-align:center;padding:5px 2px;border-radius:8px;cursor:pointer;font-family:inherit;touch-action:manipulation}
@@ -128,18 +106,18 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 #cooldown-track{fill:none;stroke:var(--bg2);stroke-width:6}
 #cooldown-arc{fill:none;stroke:var(--orange);stroke-width:6;stroke-linecap:round;stroke-dasharray:628;stroke-dashoffset:628;transition:stroke-dashoffset .05s linear}
 #big-btn{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:195px;height:195px;border-radius:50%;background:var(--bg2);border:1px solid var(--border);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;outline:none;touch-action:manipulation;transition:background .1s,transform .08s,border-color .1s}
-#big-btn:active,#big-btn.pressed{background:var(--bg3);border-color:var(--orange);transform:translate(-50%,-50%) scale(0.93)}
+#big-btn:active{background:var(--bg3);border-color:var(--orange);transform:translate(-50%,-50%) scale(0.93)}
 #big-btn.locked{opacity:.45;cursor:not-allowed}
 #btn-icon{width:48px;height:48px;stroke:var(--text);stroke-width:1.2;fill:none;pointer-events:none}
 #cooldown-text{font-size:12px;color:var(--text3);pointer-events:none}
 
-/* REST BANNER */
-#rest-banner{display:none;width:calc(100% - 32px);background:var(--orange-dim);border:1px solid var(--orange);border-radius:var(--radius);padding:12px 20px;flex-direction:row;align-items:center;justify-content:space-between;margin-bottom:4px}
-#rest-banner.show{display:flex}
-#rest-title{font-size:13px;color:var(--orange);margin-bottom:2px}
-#rest-countdown{font-size:26px;font-weight:300;font-variant-numeric:tabular-nums}
-#skip-rest{background:none;border:1px solid var(--orange);color:var(--orange);font-size:13px;padding:8px 16px;border-radius:100px;cursor:pointer;font-family:inherit;touch-action:manipulation}
-#skip-rest:active{background:var(--orange-dim)}
+/* SET REST BANNER */
+#set-rest-banner{display:none;width:calc(100% - 32px);background:var(--orange-dim);border:1px solid var(--orange);border-radius:var(--radius);padding:12px 20px;flex-direction:row;align-items:center;justify-content:space-between;margin-bottom:4px}
+#set-rest-banner.show{display:flex}
+#set-rest-title{font-size:13px;color:var(--orange);margin-bottom:2px}
+#set-rest-countdown{font-size:26px;font-weight:300;font-variant-numeric:tabular-nums}
+#skip-set-rest{background:none;border:1px solid var(--orange);color:var(--orange);font-size:13px;padding:8px 16px;border-radius:100px;cursor:pointer;font-family:inherit;touch-action:manipulation}
+#skip-set-rest:active{background:var(--orange-dim)}
 
 /* CONTROLS */
 .controls{display:flex;gap:10px;margin-top:4px}
@@ -166,9 +144,8 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 #new-ex-input{flex:1;background:var(--bg3);border:1px solid var(--border2);border-radius:10px;color:var(--text);font-size:15px;font-family:inherit;padding:10px 14px;outline:none}
 #new-ex-input:focus{border-color:var(--orange)}
 #add-ex-btn{padding:10px 20px;border-radius:100px;border:none;background:var(--orange);color:#fff;font-size:14px;cursor:pointer;font-family:inherit;touch-action:manipulation;white-space:nowrap}
-#add-ex-btn:active{opacity:.85}
 
-/* CALENDAR PAGE */
+/* CALENDAR */
 #cal-page{padding:16px;gap:12px}
 #cal-header{display:flex;align-items:center;justify-content:space-between;width:100%;padding:4px 0}
 #cal-title{font-size:18px;font-weight:500}
@@ -192,7 +169,7 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 .streak-val{font-size:28px;font-weight:300;color:var(--orange)}
 .streak-label{font-size:11px;color:var(--text4);margin-top:2px}
 
-/* HISTORY PAGE */
+/* HISTORY */
 #history-page{padding:16px;gap:12px}
 #history-list{width:100%}
 .history-day{margin-bottom:20px}
@@ -205,7 +182,7 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 #clear-history-btn{background:none;border:1px solid var(--border2);color:var(--text4);font-size:13px;padding:10px 24px;border-radius:100px;cursor:pointer;font-family:inherit;touch-action:manipulation}
 #clear-history-btn:active{background:var(--bg2);color:var(--red);border-color:var(--red)}
 
-/* SETTINGS PAGE */
+/* SETTINGS */
 #settings-page{padding:16px;gap:0}
 .settings-section{width:100%;margin-bottom:24px}
 .settings-title{font-size:12px;color:var(--text4);letter-spacing:.1em;text-transform:uppercase;padding:0 4px 8px}
@@ -241,14 +218,12 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
   <div class="tab" data-page="settings-page">⚙️ 설정</div>
 </div>
 
-<!-- WORKOUT PAGE -->
 <div id="workout-page" class="page active">
 
-  <!-- WEEKLY STRIP -->
   <div id="weekly-strip">
     <div id="weekly-label">이번 주</div>
     <div id="weekly-days"></div>
-    <div id="streak-line">연속 <b id="mini-streak">0</b>일 · 총 <b id="mini-total">0</b>일 운동</div>
+    <div id="streak-line">연속 <b id="mini-streak">0</b>일 &nbsp;·&nbsp; 총 <b id="mini-total">0</b>일 운동</div>
   </div>
 
   <div id="exercise-row">
@@ -260,16 +235,21 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
     <div id="today-start"></div>
   </div>
 
-  <!-- TIMERS -->
+  <!-- 타이머 2개 -->
   <div id="timers-row">
-    <div class="timer-box" id="stopwatch-box">
-      <div class="timer-label">⏱ 운동 총 시간</div>
-      <div class="timer-val" id="stopwatch-val">0:00</div>
+    <div class="timer-box" id="workout-timer-box">
+      <div class="timer-label">⏱ 운동 시간</div>
+      <div class="timer-val" id="workout-timer-val">0:00</div>
     </div>
     <div class="timer-box" id="rest-timer-box">
-      <div class="timer-label">😮‍💨 쉬는 시간</div>
-      <div class="timer-val" id="rest-elapsed-val">—</div>
+      <div class="timer-label">😮‍💨 휴식 시간</div>
+      <div class="timer-val" id="rest-timer-val">0:00</div>
     </div>
+  </div>
+
+  <!-- 상태 토글 버튼 -->
+  <div id="state-btn-wrap">
+    <button id="workout-state-btn" class="exercising">휴식 시작</button>
   </div>
 
   <div id="goal-row">
@@ -285,12 +265,12 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 
   <div id="progress-wrap"><div id="progress-bar"></div></div>
 
-  <div id="rest-banner">
+  <div id="set-rest-banner">
     <div>
-      <div id="rest-title">💤 세트 휴식 중</div>
-      <div id="rest-countdown">0:30</div>
+      <div id="set-rest-title">💤 세트 휴식</div>
+      <div id="set-rest-countdown">0:30</div>
     </div>
-    <button id="skip-rest">건너뛰기</button>
+    <button id="skip-set-rest">건너뛰기</button>
   </div>
 
   <div id="count-area">
@@ -412,7 +392,7 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
         </div>
       </div>
       <div class="setting-row">
-        <div class="setting-left"><div class="setting-label">세트 휴식 알림</div><div class="setting-sub">세트 완료 후 휴식 카운트다운 (초)</div></div>
+        <div class="setting-left"><div class="setting-label">세트 완료 후 휴식 알림</div><div class="setting-sub">카운트다운 (초)</div></div>
         <div class="setting-right">
           <div class="stepper">
             <button class="step-btn" data-setting="restTime" data-delta="-5">−</button>
@@ -442,7 +422,7 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 <div id="toast"></div>
 
 <script>
-// ===== AUDIO =====
+// AUDIO
 let audioCtx=null;
 function getAudio(){if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();return audioCtx;}
 function playClick(freq=700,dur=0.035,vol=0.12){if(!cfg.sound)return;try{const c=getAudio(),o=c.createOscillator(),g=c.createGain();o.connect(g);g.connect(c.destination);o.frequency.value=freq;o.type='sine';g.gain.setValueAtTime(vol,c.currentTime);g.gain.exponentialRampToValueAtTime(0.001,c.currentTime+dur);o.start();o.stop(c.currentTime+dur);}catch(e){}}
@@ -450,58 +430,52 @@ function playGoal(){if(!cfg.sound)return;try{const c=getAudio();[523,659,784,104
 function playSet(){if(!cfg.sound)return;try{const c=getAudio();[440,550].forEach((f,i)=>{const o=c.createOscillator(),g=c.createGain();o.connect(g);g.connect(c.destination);o.frequency.value=f;o.type='sine';const t=c.currentTime+i*0.15;g.gain.setValueAtTime(0.15,t);g.gain.exponentialRampToValueAtTime(0.001,t+0.25);o.start(t);o.stop(t+0.25);});}catch(e){}}
 function vib(p){if(cfg.vibration&&navigator.vibrate)navigator.vibrate(p);}
 
-// ===== CONFIG =====
+// CONFIG
 const DEFAULTS={baseGoal:15,goalDecay:2,minGoal:5,cooldown:1.0,restTime:30,sound:true,vibration:true,goalDecayOn:true,cooldownOn:true,restTimeOn:true};
 let cfg=Object.assign({},DEFAULTS,JSON.parse(localStorage.getItem('wc_cfg')||'{}'));
 function saveCfg(){localStorage.setItem('wc_cfg',JSON.stringify(cfg));}
 
-// ===== EXERCISES =====
+// EXERCISES
 const DEFAULT_EX=['푸시업','스쿼트','풀업','싯업','런지','플랭크'];
 function getExercises(){return JSON.parse(localStorage.getItem('wc_exercises')||JSON.stringify(DEFAULT_EX));}
 function saveExercises(arr){localStorage.setItem('wc_exercises',JSON.stringify(arr));}
-
 function renderExChips(){
   const row=document.getElementById('exercise-row');
   const editBtn=document.getElementById('edit-ex-btn');
   row.querySelectorAll('.ex-chip').forEach(c=>c.remove());
-  const exList=getExercises();
-  exList.forEach(name=>{
+  getExercises().forEach(name=>{
     const btn=document.createElement('button');
     btn.className='ex-chip'+(name===currentEx?' active':'');
     btn.dataset.ex=name;btn.textContent=name;
     btn.addEventListener('pointerdown',e=>{
       e.preventDefault();
       document.querySelectorAll('.ex-chip').forEach(c=>c.classList.remove('active'));
-      btn.classList.add('active');
-      currentEx=name;
+      btn.classList.add('active');currentEx=name;
       document.getElementById('ex-label').textContent=name;
-      resetCount();curSet=1;document.getElementById('cur-set-num').textContent='1';
-      updateGoalDisplay();stopSetRest();endCooldown();
+      resetAll();
     });
     row.insertBefore(btn,editBtn);
   });
+  const exList=getExercises();
   if(!exList.includes(currentEx)&&exList.length>0){
     currentEx=exList[0];
     document.getElementById('ex-label').textContent=currentEx;
-    const first=row.querySelector('.ex-chip');
-    if(first)first.classList.add('active');
+    const first=row.querySelector('.ex-chip');if(first)first.classList.add('active');
   }
 }
 
-// ===== STATE =====
-let count=0,countHistory=[],curSet=1;
-let currentEx=getExercises()[0]||'운동';
-let goalReachedPlayed=false,sessionGoal=cfg.baseGoal;
-let todayStart=null;
-
-// TIMERS
-let stopwatchInterval=null,stopwatchStart=null,stopwatchElapsed=0;
-let restElapsedInterval=null,restElapsedStart=null;
-let restPauseTimer=null,restPauseRemaining=0;
+// STATE
+let count=0,countHistory=[],curSet=1,currentEx=getExercises()[0]||'운동';
+let goalReachedPlayed=false,sessionGoal=cfg.baseGoal,todayStart=null;
+// isExercising: true=운동중, false=휴식중
+let isExercising=true;
+let workoutSec=0,restSec=0;
+let workoutInterval=null,restInterval=null;
 let cooldownActive=false,cooldownAnimFrame=null;
+let setRestTimer=null,setRestRemaining=0;
 const CIRCUMFERENCE=2*Math.PI*100;
 
-// ===== ELEMENTS =====
+// ELEMENTS
 const display=document.getElementById('count-display');
 const exLabel=document.getElementById('ex-label');
 const curSetNumEl=document.getElementById('cur-set-num');
@@ -512,70 +486,71 @@ const bigBtn=document.getElementById('big-btn');
 const cooldownArc=document.getElementById('cooldown-arc');
 const cooldownText=document.getElementById('cooldown-text');
 const todayStartEl=document.getElementById('today-start');
-const stopwatchEl=document.getElementById('stopwatch-val');
-const restElapsedEl=document.getElementById('rest-elapsed-val');
-const restBanner=document.getElementById('rest-banner');
-const restCountdown=document.getElementById('rest-countdown');
+const workoutTimerVal=document.getElementById('workout-timer-val');
+const restTimerVal=document.getElementById('rest-timer-val');
+const stateBtn=document.getElementById('workout-state-btn');
+const setRestBanner=document.getElementById('set-rest-banner');
 
-// ===== STOPWATCH (운동 총 시간 — 탭할 때만 올라감) =====
-function startStopwatch(){
-  // 탭 순간 스톱워치 재개
-  if(stopwatchInterval)return;
-  stopwatchStart=Date.now();
-  stopwatchInterval=setInterval(()=>{
-    const total=stopwatchElapsed+Math.floor((Date.now()-stopwatchStart)/1000);
-    const m=Math.floor(total/60),s=total%60;
-    stopwatchEl.textContent=m+':'+String(s).padStart(2,'0');
-  },500);
-  document.getElementById('stopwatch-box').classList.add('active-timer');
-}
-function pauseStopwatch(){
-  // 탭 후 쉬는 시간 시작 = 스톱워치 멈춤
-  if(!stopwatchInterval)return;
-  stopwatchElapsed+=Math.floor((Date.now()-stopwatchStart)/1000);
-  clearInterval(stopwatchInterval);
-  stopwatchInterval=null;
-  stopwatchStart=null;
-  document.getElementById('stopwatch-box').classList.remove('active-timer');
-}
+function fmtTime(sec){const m=Math.floor(sec/60),s=sec%60;return m+':'+String(s).padStart(2,'0');}
 
-// ===== REST ELAPSED (쉬는 시간 타이머 — 탭 후 올라감) =====
-function startRestElapsed(){
-  stopRestElapsed();
-  restElapsedStart=Date.now();
-  restElapsedEl.textContent='0초';
+// WORKOUT / REST TIMER
+function startWorkoutTimer(){
+  if(workoutInterval)return;
+  document.getElementById('workout-timer-box').classList.add('active-timer');
+  workoutInterval=setInterval(()=>{workoutSec++;workoutTimerVal.textContent=fmtTime(workoutSec);},1000);
+}
+function stopWorkoutTimer(){
+  clearInterval(workoutInterval);workoutInterval=null;
+  document.getElementById('workout-timer-box').classList.remove('active-timer');
+}
+function startRestTimer(){
+  if(restInterval)return;
   document.getElementById('rest-timer-box').classList.add('active-timer');
-  restElapsedInterval=setInterval(()=>{
-    const sec=Math.floor((Date.now()-restElapsedStart)/1000);
-    const m=Math.floor(sec/60),s=sec%60;
-    restElapsedEl.textContent=m>0?m+'분 '+s+'초':s+'초';
-  },1000);
+  restInterval=setInterval(()=>{restSec++;restTimerVal.textContent=fmtTime(restSec);},1000);
 }
-function stopRestElapsed(){
-  clearInterval(restElapsedInterval);restElapsedInterval=null;restElapsedStart=null;
-  restElapsedEl.textContent='—';
+function stopRestTimer(){
+  clearInterval(restInterval);restInterval=null;
   document.getElementById('rest-timer-box').classList.remove('active-timer');
 }
+function resetRestTimer(){restSec=0;restTimerVal.textContent='0:00';stopRestTimer();}
 
-// ===== SET REST BANNER =====
+// STATE TOGGLE
+function setExercising(){
+  isExercising=true;
+  stateBtn.className='exercising';
+  stateBtn.textContent='휴식 시작';
+  startWorkoutTimer();
+  stopRestTimer();
+}
+function setResting(){
+  isExercising=false;
+  stateBtn.className='resting';
+  stateBtn.textContent='운동 재개';
+  stopWorkoutTimer();
+  resetRestTimer();
+  startRestTimer();
+}
+stateBtn.addEventListener('pointerdown',e=>{
+  e.preventDefault();
+  if(isExercising)setResting();
+  else setExercising();
+  playClick(600,0.04);vib(20);
+});
+
+// SET REST BANNER (세트 완료 후 권장 휴식)
 function startSetRest(){
   if(!cfg.restTimeOn||cfg.restTime<=0)return;
-  restPauseRemaining=cfg.restTime;
-  restBanner.classList.add('show');
+  setRestRemaining=cfg.restTime;
+  setRestBanner.classList.add('show');
   updateSetRestDisplay();
-  clearInterval(restPauseTimer);
-  restPauseTimer=setInterval(()=>{
-    restPauseRemaining--;updateSetRestDisplay();
-    if(restPauseRemaining<=0)stopSetRest();
-  },1000);
+  clearInterval(setRestTimer);
+  setRestTimer=setInterval(()=>{setRestRemaining--;updateSetRestDisplay();if(setRestRemaining<=0)stopSetRest();},1000);
 }
-function stopSetRest(){clearInterval(restPauseTimer);restBanner.classList.remove('show');}
-function updateSetRestDisplay(){
-  const m=Math.floor(restPauseRemaining/60),s=restPauseRemaining%60;
-  restCountdown.textContent=m+':'+String(s).padStart(2,'0');
-}
+function stopSetRest(){clearInterval(setRestTimer);setRestBanner.classList.remove('show');}
+function updateSetRestDisplay(){document.getElementById('set-rest-countdown').textContent=fmtTime(setRestRemaining);}
+document.getElementById('skip-set-rest').addEventListener('pointerdown',e=>{e.preventDefault();stopSetRest();});
 
-// ===== COOLDOWN =====
+// COOLDOWN
 function startCooldown(){
   if(!cfg.cooldownOn||cfg.cooldown<=0)return;
   cooldownActive=true;bigBtn.classList.add('locked');
@@ -592,50 +567,31 @@ function startCooldown(){
 }
 function endCooldown(){
   cooldownActive=false;bigBtn.classList.remove('locked');
-  cooldownArc.style.strokeDashoffset=CIRCUMFERENCE;
-  cooldownText.textContent='';cancelAnimationFrame(cooldownAnimFrame);
+  cooldownArc.style.strokeDashoffset=CIRCUMFERENCE;cooldownText.textContent='';
+  cancelAnimationFrame(cooldownAnimFrame);
 }
 
-// ===== DATE / TODAY START =====
+// DATE / TODAY START
 function dateKey(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
-
 function markTodayStart(){
   const today=dateKey(new Date());
   const days=JSON.parse(localStorage.getItem('wc_days')||'{}');
   const now=new Date();
-  // 매일 갱신: 날짜가 바뀌면 새로 기록
-  if(!days[today]){
-    days[today]={start:now.toISOString(),sets:[]};
-    localStorage.setItem('wc_days',JSON.stringify(days));
-    todayStart=now;
-  } else {
-    // 기존 날짜면 시작시간 유지 (하루에 처음 탭할 때만 갱신)
-    todayStart=new Date(days[today].start);
-  }
+  if(!days[today]){days[today]={start:now.toISOString(),sets:[]};localStorage.setItem('wc_days',JSON.stringify(days));todayStart=now;}
+  else todayStart=new Date(days[today].start);
   updateStartDisplay();
 }
-
 function refreshTodayStart(){
-  // 첫 탭 시 오늘 데이터가 없으면 새로 만들기
   const today=dateKey(new Date());
   const days=JSON.parse(localStorage.getItem('wc_days')||'{}');
-  if(!days[today]){
-    const now=new Date();
-    days[today]={start:now.toISOString(),sets:[]};
-    localStorage.setItem('wc_days',JSON.stringify(days));
-    todayStart=now;
-    updateStartDisplay();
-    renderWeeklyStrip();
-  }
+  if(!days[today]){const now=new Date();days[today]={start:now.toISOString(),sets:[]};localStorage.setItem('wc_days',JSON.stringify(days));todayStart=now;updateStartDisplay();renderWeeklyStrip();}
 }
-
 function updateStartDisplay(){
   if(!todayStart)return;
-  const h=todayStart.getHours(),m=String(todayStart.getMinutes()).padStart(2,'0');
-  todayStartEl.textContent='오늘 시작 '+h+':'+m;
+  todayStartEl.textContent='오늘 시작 '+todayStart.getHours()+':'+String(todayStart.getMinutes()).padStart(2,'0');
 }
 
-// ===== RECORDS =====
+// RECORDS
 function saveRecord(ex,set,reps){
   const today=dateKey(new Date());
   const days=JSON.parse(localStorage.getItem('wc_days')||'{}');
@@ -647,11 +603,10 @@ function saveRecord(ex,set,reps){
   localStorage.setItem('wc_records',JSON.stringify(records));
 }
 
-// ===== GOAL =====
+// GOAL
 function computeGoal(setNum){if(!cfg.goalDecayOn)return cfg.baseGoal;return Math.max(cfg.minGoal,cfg.baseGoal-cfg.goalDecay*(setNum-1));}
 function updateGoalDisplay(){
-  sessionGoal=computeGoal(curSet);
-  goalNumEl.textContent=sessionGoal;
+  sessionGoal=computeGoal(curSet);goalNumEl.textContent=sessionGoal;
   const next=computeGoal(curSet+1);
   decayLabel.textContent=(cfg.goalDecayOn&&next<sessionGoal)?'다음 세트 → '+next+'개':'';
   updateProgress();
@@ -661,13 +616,12 @@ function updateProgress(){
   count>=sessionGoal?display.classList.add('goal-reached'):display.classList.remove('goal-reached');
 }
 
-// ===== MAIN ACTIONS =====
+// ACTIONS
 function increment(){
   if(cooldownActive){vib(10);return;}
+  // 휴식 중이라면 운동 중으로 자동 전환
+  if(!isExercising)setExercising();
   refreshTodayStart();
-  // 탭 = 운동 중 → 스톱워치 재개, 쉬는시간 타이머 멈춤
-  startStopwatch();
-  stopRestElapsed();
   countHistory.push(count);if(countHistory.length>100)countHistory.shift();
   count++;display.textContent=count;
   display.classList.remove('pop');void display.offsetWidth;display.classList.add('pop');
@@ -675,40 +629,39 @@ function increment(){
   vib(25);playClick();updateProgress();
   if(count===sessionGoal&&!goalReachedPlayed){goalReachedPlayed=true;playGoal();vib([50,30,80]);showToast('🎯 목표 달성!',true);}
   startCooldown();
-  // 쿨다운 끝나면 → 스톱워치 멈추고 쉬는 시간 시작
-  const cd=cfg.cooldownOn?cfg.cooldown*1000:300;
-  setTimeout(()=>{
-    pauseStopwatch();
-    startRestElapsed();
-  },cd+50);
 }
-
 function undo(){
   if(!countHistory.length)return;
   count=countHistory.pop();display.textContent=count;
   display.classList.add('flash');setTimeout(()=>display.classList.remove('flash'),180);
   goalReachedPlayed=count>=sessionGoal;updateProgress();playClick(440,0.06,0.1);
 }
-
 function resetCount(){
   countHistory=[];count=0;goalReachedPlayed=false;
   display.textContent='0';display.classList.remove('goal-reached');
   display.classList.add('flash');setTimeout(()=>display.classList.remove('flash'),180);
   updateProgress();endCooldown();
-  pauseStopwatch();stopRestElapsed();
 }
-
+function resetAll(){
+  resetCount();curSet=1;curSetNumEl.textContent='1';
+  updateGoalDisplay();stopSetRest();endCooldown();
+  stopWorkoutTimer();workoutSec=0;workoutTimerVal.textContent='0:00';
+  resetRestTimer();isExercising=true;stateBtn.className='exercising';stateBtn.textContent='휴식 시작';
+}
 function completeSet(){
   if(count===0){showToast('먼저 운동하세요!');return;}
   saveRecord(currentEx,curSet,count);
   const done=curSet;curSet++;curSetNumEl.textContent=curSet;
   resetCount();updateGoalDisplay();
-  startSetRest();playSet();vib([40,20,60]);
+  // 세트 완료 → 자동으로 휴식 상태로
+  setResting();
+  startSetRest();
+  playSet();vib([40,20,60]);
   showToast('세트 '+done+' 완료! 💪',true);
   renderWeeklyStrip();
 }
 
-// ===== TOAST =====
+// TOAST
 let toastTmr=null;
 function showToast(msg,orange=false){
   const t=document.getElementById('toast');t.textContent=msg;
@@ -716,41 +669,33 @@ function showToast(msg,orange=false){
   clearTimeout(toastTmr);toastTmr=setTimeout(()=>t.className='',2200);
 }
 
-// ===== WEEKLY STRIP =====
+// WEEKLY STRIP
 function renderWeeklyStrip(){
   const days=JSON.parse(localStorage.getItem('wc_days')||'{}');
-  const now=new Date();
-  const todayKey=dateKey(now);
-  const todayDow=now.getDay(); // 0=일
-  const container=document.getElementById('weekly-days');
+  const now=new Date(),todayKey=dateKey(now),todayDow=now.getDay();
   const dayNames=['일','월','화','수','목','금','토'];
   let html='';
   for(let i=0;i<7;i++){
-    const d=new Date(now);
-    d.setDate(now.getDate()-todayDow+i);
+    const d=new Date(now);d.setDate(now.getDate()-todayDow+i);
     const key=dateKey(d);
-    const isFuture=d>now&&key!==todayKey;
-    const isToday=key===todayKey;
+    const isFuture=key>todayKey;const isToday=key===todayKey;
     const didWork=days[key]&&days[key].sets&&days[key].sets.length>0;
-    let circleClass='wday-circle';
-    if(isToday)circleClass+=' today';
-    else if(isFuture)circleClass+=' future';
-    else if(didWork)circleClass+=' did';
-    else circleClass+=' missed';
-    html+=`<div class="wday"><div class="wday-name">${dayNames[i]}</div><div class="${circleClass}">${d.getDate()}</div></div>`;
+    let cls='wday-circle';
+    if(isToday)cls+=' today';
+    else if(isFuture)cls+=' future';
+    else if(didWork)cls+=' did';
+    else cls+=' missed';
+    html+=`<div class="wday"><div class="wday-name">${dayNames[i]}</div><div class="${cls}">${d.getDate()}</div></div>`;
   }
-  container.innerHTML=html;
-  // streak
+  document.getElementById('weekly-days').innerHTML=html;
   const keys=Object.keys(days).filter(k=>days[k].sets&&days[k].sets.length>0).sort();
-  let cur=0;
-  const dd=new Date(now);dd.setHours(0,0,0,0);
-  const tmp2=new Date(dd);
-  while(days[dateKey(tmp2)]&&days[dateKey(tmp2)].sets&&days[dateKey(tmp2)].sets.length>0){cur++;tmp2.setDate(tmp2.getDate()-1);}
+  let cur=0;const dd=new Date(now);dd.setHours(0,0,0,0);
+  while(days[dateKey(dd)]&&days[dateKey(dd)].sets&&days[dateKey(dd)].sets.length>0){cur++;dd.setDate(dd.getDate()-1);}
   document.getElementById('mini-streak').textContent=cur;
   document.getElementById('mini-total').textContent=keys.length;
 }
 
-// ===== CALENDAR =====
+// CALENDAR
 let calYear=new Date().getFullYear(),calMonth=new Date().getMonth();
 function renderCalendar(){
   const days=JSON.parse(localStorage.getItem('wc_days')||'{}');
@@ -772,17 +717,10 @@ function renderCalendar(){
   }
   document.getElementById('cal-days').innerHTML=html;
   const keys=Object.keys(days).filter(k=>days[k].sets&&days[k].sets.length>0).sort();
-  const daySet=new Set(keys);
-  let cur=0,best=0,tmp=0;
-  const d2=new Date();d2.setHours(0,0,0,0);
-  const dd2=new Date(d2);
+  const daySet=new Set(keys);let cur=0,best=0,tmp=0;
+  const dd=new Date();dd.setHours(0,0,0,0);const dd2=new Date(dd);
   while(daySet.has(dateKey(dd2))){cur++;dd2.setDate(dd2.getDate()-1);}
-  for(let i=0;i<keys.length;i++){
-    const prev=i>0?new Date(keys[i-1]):null;
-    const cur2=new Date(keys[i]);
-    tmp=prev&&(cur2-prev)/86400000===1?tmp+1:1;
-    best=Math.max(best,tmp);
-  }
+  for(let i=0;i<keys.length;i++){const prev=i>0?new Date(keys[i-1]):null,cur2=new Date(keys[i]);tmp=prev&&(cur2-prev)/86400000===1?tmp+1:1;best=Math.max(best,tmp);}
   document.getElementById('streak-cur').textContent=cur;
   document.getElementById('streak-total').textContent=keys.length;
   document.getElementById('streak-best').textContent=best;
@@ -790,7 +728,7 @@ function renderCalendar(){
 document.getElementById('cal-prev').addEventListener('pointerdown',e=>{e.preventDefault();calMonth--;if(calMonth<0){calMonth=11;calYear--;}renderCalendar();});
 document.getElementById('cal-next').addEventListener('pointerdown',e=>{e.preventDefault();calMonth++;if(calMonth>11){calMonth=0;calYear++;}renderCalendar();});
 
-// ===== HISTORY =====
+// HISTORY
 function renderHistory(){
   const list=document.getElementById('history-list');
   const records=JSON.parse(localStorage.getItem('wc_records')||'[]').reverse();
@@ -804,7 +742,7 @@ document.getElementById('clear-history-btn').addEventListener('pointerdown',e=>{
   if(confirm('모든 기록을 삭제할까요?')){localStorage.removeItem('wc_records');localStorage.removeItem('wc_days');renderHistory();renderWeeklyStrip();showToast('기록 삭제됨');}
 });
 
-// ===== SETTINGS =====
+// SETTINGS
 const settingMeta={baseGoal:{min:1,max:999},goalDecay:{min:0,max:20},minGoal:{min:1,max:99},cooldown:{min:0.5,max:10,float:true},restTime:{min:5,max:300}};
 function syncSettingsUI(){
   document.getElementById('s-baseGoal').textContent=cfg.baseGoal;
@@ -824,9 +762,7 @@ document.querySelectorAll('.step-btn').forEach(btn=>{
     e.preventDefault();
     const key=btn.dataset.setting,delta=parseFloat(btn.dataset.delta),meta=settingMeta[key];
     cfg[key]=Math.round((Math.min(meta.max,Math.max(meta.min,cfg[key]+delta)))*10)/10;
-    saveCfg();syncSettingsUI();
-    if(key==='baseGoal')updateGoalDisplay();
-    playClick(600,0.03);
+    saveCfg();syncSettingsUI();if(key==='baseGoal')updateGoalDisplay();playClick(600,0.03);
   });
 });
 [['t-goalDecay','goalDecayOn'],['t-cooldown','cooldownOn'],['t-restTime','restTimeOn'],['t-sound','sound'],['t-vibration','vibration']].forEach(([id,cfgKey])=>{
@@ -837,7 +773,7 @@ document.querySelectorAll('.step-btn').forEach(btn=>{
   });
 });
 
-// ===== EXERCISE EDITOR =====
+// EXERCISE EDITOR
 document.getElementById('edit-ex-btn').addEventListener('pointerdown',e=>{e.preventDefault();openExModal();});
 document.getElementById('close-ex-modal').addEventListener('pointerdown',e=>{e.preventDefault();closeExModal();});
 document.getElementById('ex-modal').addEventListener('pointerdown',e=>{if(e.target===document.getElementById('ex-modal'))closeExModal();});
@@ -855,7 +791,7 @@ document.getElementById('add-ex-btn').addEventListener('pointerdown',e=>{
   const el=getExercises();el.push(name);saveExercises(el);inp.value='';renderExEditList();
 });
 
-// ===== TABS =====
+// TABS
 document.querySelectorAll('.tab').forEach(tab=>{
   tab.addEventListener('pointerdown',e=>{
     e.preventDefault();
@@ -869,12 +805,11 @@ document.querySelectorAll('.tab').forEach(tab=>{
   });
 });
 
-// ===== CONTROLS =====
+// MAIN CONTROLS
 document.getElementById('big-btn').addEventListener('pointerdown',e=>{e.preventDefault();increment();});
 document.getElementById('undo-btn').addEventListener('pointerdown',e=>{e.preventDefault();undo();});
-document.getElementById('reset-btn').addEventListener('pointerdown',e=>{e.preventDefault();resetCount();});
+document.getElementById('reset-btn').addEventListener('pointerdown',e=>{e.preventDefault();resetAll();});
 document.getElementById('set-done-btn').addEventListener('pointerdown',e=>{e.preventDefault();completeSet();});
-document.getElementById('skip-rest').addEventListener('pointerdown',e=>{e.preventDefault();stopSetRest();});
 document.getElementById('goal-minus').addEventListener('pointerdown',e=>{e.preventDefault();cfg.baseGoal=Math.max(1,cfg.baseGoal-1);saveCfg();updateGoalDisplay();syncSettingsUI();});
 document.getElementById('goal-plus').addEventListener('pointerdown',e=>{e.preventDefault();cfg.baseGoal=Math.min(999,cfg.baseGoal+1);saveCfg();updateGoalDisplay();syncSettingsUI();});
 document.body.addEventListener('pointerdown',e=>{if(e.target===document.body)increment();});
@@ -885,15 +820,15 @@ document.addEventListener('keydown',e=>{
   increment();
 });
 
-// ===== INIT =====
+// INIT
 cooldownArc.style.strokeDasharray=CIRCUMFERENCE;
 cooldownArc.style.strokeDashoffset=CIRCUMFERENCE;
 renderExChips();
 exLabel.textContent=currentEx;
-updateGoalDisplay();
-syncSettingsUI();
-markTodayStart();
-renderWeeklyStrip();
+updateGoalDisplay();syncSettingsUI();
+markTodayStart();renderWeeklyStrip();
+// 시작은 운동 중 상태
+startWorkoutTimer();
 </script>
 </body>
 </html>
